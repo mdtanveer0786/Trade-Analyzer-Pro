@@ -146,7 +146,7 @@ const LandingPage = () => {
     const faqs = useMemo(() => [
         {
             question: "Is there a free trial?",
-            answer: "Yes! We offer a 14-day free trial with full access to all premium features. No credit card required to start."
+            answer: "Yes! We offer a 7-day free trial with full access to all premium features. No credit card required to start."
         },
         {
             question: "Which Indian brokers do you support?",
@@ -226,32 +226,32 @@ const LandingPage = () => {
 
     const testimonials = useMemo(() => [
         {
-            quote: "I separate strategy issues from execution now. Reviewing trades brought massive clarity. I finally know what to fix.",
-            author: "Abhay Sharma",
-            role: "Equity Trader • Mumbai",
-            rating: 5,
-            avatar: "AS"
-        },
-        {
-            quote: "I could literally see my emotional mistakes like fear exits or revenge trades. That one insight changed everything for me.",
-            author: "Rajvansh Mehta",
-            role: "Derivatives Trader • Delhi",
-            rating: 5,
-            avatar: "RM"
-        },
-        {
             quote: "I only trade twice a week, but journaling keeps me consistent. I learn from every mistake and feel much more in control.",
-            author: "Abhinav Singh",
+            author: "Arjun Reddy",
             role: "Swing Trader • Bangalore",
             rating: 5,
-            avatar: "AS"
+            avatar: "AR"
+        },
+        {
+            quote: "My risk management was non-existent. Trade Analyzer Pro showed me my true drawdown. Now I trade with peace of mind.",
+            author: "Sameer Varma",
+            role: "Options Trader • Hyderabad",
+            rating: 5,
+            avatar: "SV"
+        },
+        {
+            quote: "Visualizing my equity curve in real-time is a game-changer. I can see my progress and stay motivated even during drawdowns.",
+            author: "Ishaan Gupta",
+            role: "Intraday Trader • Mumbai",
+            rating: 5,
+            avatar: "IG"
         }
     ], [])
 
     const pricingPlans = useMemo(() => [
         {
             name: "Monthly Plan",
-            price: "₹299",
+            price: "₹199",
             period: "/month",
             description: "Perfect for trying out advanced features",
             features: [
@@ -260,37 +260,35 @@ const LandingPage = () => {
                 { text: "Risk management tools", included: true },
                 { text: "Trade screenshots & notes", included: true },
                 { text: "Email support", included: true },
-                { text: "Priority support", included: false },
                 { text: "AI-powered insights", included: false },
                 { text: "Custom reports", included: false }
             ],
             cta: "Start Monthly Plan",
             popular: false,
             color: "gray",
-            trial: "14-day free trial"
+            trial: "7-day free trial"
         },
         {
             name: "Annual Plan",
-            price: "₹999",
+            price: "₹786",
             period: "/year",
             description: "Best value for serious traders",
-            savings: "Save ₹2,589 (72% off)",
-            monthlyEquivalent: "Just ₹83/month",
+            savings: "Save ₹1,602 (67% off)",
+            monthlyEquivalent: "Just ₹65/month",
             features: [
                 { text: "Everything in Monthly Plan", included: true },
+                { text: "AI-powered insights", included: true },
+                { text: "Custom reports", included: true },
                 { text: "Priority email & chat support", included: true },
+                { text: "Dedicated account manager", included: true },
                 { text: "Early access to new features", included: true },
-                { text: "Advanced AI-powered insights", included: true },
-                { text: "Custom report templates", included: true },
-                { text: "Broker API priority access", included: true },
-                { text: "Weekly performance reviews", included: true },
-                { text: "Dedicated account manager", included: true }
+                { text: "Broker API priority access", included: true }
             ],
             cta: "Get Annual Plan",
             popular: true,
             color: "premium",
-            trial: "14-day free trial + 30-day money back",
-            badge: "MOST POPULAR"
+            trial: "7-day free trial",
+            badge: "BEST VALUE"
         }
     ], [])
 
@@ -509,7 +507,7 @@ const LandingPage = () => {
                                 to="/register"
                                 className="group px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl font-bold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 flex items-center justify-center space-x-3 hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(37,99,235,0.3)] hover:shadow-[0_0_40px_rgba(37,99,235,0.5)]"
                             >
-                                <span>Start 14-Day Free Trial</span>
+                                <span>Start 7-Day Free Trial</span>
                                 <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" />
                             </Link>
                             <button className="group px-10 py-5 bg-gray-900 border border-gray-800 rounded-2xl font-bold text-lg hover:bg-gray-800 hover:border-gray-700 transition-all duration-300 flex items-center justify-center space-x-3 hover:scale-105 active:scale-95 shadow-xl">
@@ -895,7 +893,7 @@ const LandingPage = () => {
                         {/* Note */}
                         <div className="text-center mt-16 max-w-2xl mx-auto">
                             <p className="text-gray-400 text-lg font-medium mb-4">
-                                Every plan starts with a full-featured <span className="text-white font-bold">14-day free trial</span>.
+                                Every plan starts with a full-featured <span className="text-white font-bold">7-day free trial</span>.
                             </p>
                             <p className="text-gray-500 text-sm font-bold uppercase tracking-[0.2em] flex flex-wrap justify-center gap-x-8 gap-y-4">
                                 <span className="flex items-center"><BadgeCheck className="w-4 h-4 mr-2" /> CANCEL ANYTIME</span>

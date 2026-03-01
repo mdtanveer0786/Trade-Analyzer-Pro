@@ -29,6 +29,7 @@ import { useAuth } from '../contexts/AuthContext'
 const EquityCurveChart = lazy(() => import('../components/charts/EquityCurveChart'))
 const PerformanceChart = lazy(() => import('../components/charts/PerformanceChart'))
 const WinRateChart = lazy(() => import('../components/charts/WinRateChart'))
+const PsychologyChart = lazy(() => import('../components/psychology/PsychologyChart'))
 
 const ChartLoader = () => (
   <div className="w-full h-full flex items-center justify-center bg-gray-900/20 animate-pulse rounded-xl">
@@ -309,7 +310,7 @@ const Dashboard = () => {
                 {activeView === 'equity' ? (
                   <PerformanceChart data={data.equityCurve} />
                 ) : (
-                  <EquityCurveChart data={data.equityCurve} />
+                  <PsychologyChart data={data.psychology?.timeSeries || []} />
                 )}
               </Suspense>
             </div>

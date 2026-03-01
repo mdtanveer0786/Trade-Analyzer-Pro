@@ -285,7 +285,29 @@ export const updateUser = async (req, res, next) => {
         const updateData = {}
         if (name) updateData.name = name
         if (email) updateData.email = email
-        if (role) updateData.role = role
+        
+        if (role && role !== user.role) {
+            // Prevent self-demotion
+            if (req.userId.toString() === user._id.toString() && role !== 'admin') {
+                return res.status(400).json({
+                    success: false,
+                    message: 'CRITICAL ERROR: Self-demotion protocol blocked. You cannot revoke your own admin access.',
+                })
+            }
+
+            // Ensure at least one admin exists
+            if (user.role === 'admin' && role !== 'admin') {
+                const adminCount = await User.countDocuments({ role: 'admin' })
+                if (adminCount <= 1) {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'SYSTEM LOCK: Final admin account detected. Demotion denied to prevent complete lockout.',
+                    })
+                }
+            }
+            updateData.role = role
+        }
+
         if (preferences) updateData.preferences = { ...user.preferences, ...preferences }
 
         if (subscription) {
@@ -338,61 +360,63 @@ export const deleteUser = async (req, res, next) => {
             })
         }
 
-        // Check if user is admin
+        // Safeguard against deleting self or other admins
         if (user.role === 'admin') {
-            return res.status(400).json({
-                success: false,
-                message: 'Cannot delete admin user',
+            // Prevent self-deletion
+            if (req.userId.toString() === user._id.toString()) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'CRITICAL ERROR: Self-deletion protocol blocked. You cannot de-provision your own admin account.',
+                })
+            }
+
+            // Ensure at least one admin exists if trying to delete another admin
+            const adminCount = await User.countDocuments({ role: 'admin' })
+            if (adminCount <= 1) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'SYSTEM LOCK: Final admin account detected. De-provisioning denied to prevent complete lockout.',
+                })
+            }
+        }
+
+        // PERFORM HARD DELETE (FULL CONTROL)
+        // 1. Delete all trades associated with the user
+        await Trade.deleteMany({ user: user._id })
+
+        // 2. Delete all AI Summaries associated with the user
+        await AISummary.deleteMany({ user: user._id })
+
+        // 3. Delete any notifications sent specifically to this user
+        // (Optional: depending on your Notification model structure)
+        
+        // 4. Cancel active subscription in DB
+        if (user.subscription.razorpaySubscriptionId) {
+            await Subscription.deleteOne({
+                razorpaySubscriptionId: user.subscription.razorpaySubscriptionId,
             })
         }
 
-        // Delete user data (soft delete)
-        user.isDeleted = true
-        user.deletedAt = new Date()
-        user.deletedBy = req.userId
-        await user.save()
-
-        // Cancel any active subscriptions
-        if (user.subscription.razorpaySubscriptionId) {
-            try {
-                const subscription = await Subscription.findOne({
-                    razorpaySubscriptionId: user.subscription.razorpaySubscriptionId,
-                })
-
-                if (subscription) {
-                    subscription.status = 'cancelled'
-                    subscription.cancelledAt = new Date()
-                    subscription.cancellationReason = 'Account deleted by admin'
-                    await subscription.save()
-                }
-            } catch (error) {
-                console.error('Error cancelling subscription:', error)
-            }
-        }
+        // 5. Delete the User record itself
+        await User.findByIdAndDelete(user._id)
 
         // Log the admin action
         await createAdminLog({
             admin: req.userId,
-            action: 'DELETE_USER',
+            action: 'HARD_DELETE_USER',
             targetUser: user._id,
+            metadata: {
+                email: user.email,
+                name: user.name,
+                reason: 'Permanent de-provisioning by Admin'
+            },
             ip: req.ip,
             userAgent: req.get('User-Agent'),
         })
 
-        // Send notification email
-        await sendEmail({
-            to: user.email,
-            template: 'account-deleted',
-            context: {
-                name: user.name,
-                deletionDate: new Date().toLocaleDateString('en-IN'),
-                contactEmail: 'support@tradeanalyzer.in',
-            },
-        })
-
         res.json({
             success: true,
-            message: 'User deleted successfully',
+            message: 'OPERATOR PURGED: User and all associated data have been permanently removed from the system.',
         })
     } catch (error) {
         next(error)

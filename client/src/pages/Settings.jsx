@@ -533,8 +533,8 @@ const Settings = () => {
                                                     {user?.role === 'premium' ? 'Elite Access' : 'Basic Tier'}
                                                 </span>
                                                 <p className="font-black text-lg uppercase tracking-tight text-white">
-                                                    {user?.subscription?.plan === 'yearly' ? 'Annual Alpha' : 
-                                                     user?.subscription?.plan === 'monthly' ? 'Monthly Pro' : 'Standard Terminal'}
+                                                    {user?.subscription?.plan === 'yearly' ? 'Annual Plan' : 
+                                                     user?.subscription?.plan === 'monthly' ? 'Monthly Plan' : 'Standard Terminal'}
                                                 </p>
                                             </div>
                                             <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">

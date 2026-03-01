@@ -241,21 +241,47 @@ export const createTrade = async (req, res, next) => {
 // @access  Private
 export const updateTrade = async (req, res, next) => {
     try {
-        const trade = await Trade.findOneAndUpdate(
-            { _id: req.params.id, user: req.userId },
-            req.body,
-            {
-                new: true,
-                runValidators: true,
-            }
-        ).populate('strategy')
-
-        if (!trade) {
+        const updateData = { ...req.body }
+        
+        // Find existing trade to get baseline values if not all are provided in update
+        const existingTrade = await Trade.findOne({ _id: req.params.id, user: req.userId })
+        if (!existingTrade) {
             return res.status(404).json({
                 success: false,
                 message: 'Trade not found',
             })
         }
+
+        // Recalculate P&L if relevant fields are changed
+        const entryPrice = updateData.entryPrice || existingTrade.entryPrice
+        const exitPrice = updateData.exitPrice || existingTrade.exitPrice
+        const positionSize = updateData.positionSize || existingTrade.positionSize
+        const direction = (updateData.direction || existingTrade.direction)?.toLowerCase()
+
+        if (entryPrice && exitPrice && positionSize) {
+            const priceDiff = exitPrice - entryPrice
+            updateData.pnl = direction === 'long'
+                ? priceDiff * positionSize
+                : -priceDiff * positionSize
+            
+            // Deduct commission and fees
+            const commission = updateData.commission !== undefined ? updateData.commission : existingTrade.commission
+            const fees = updateData.fees !== undefined ? updateData.fees : existingTrade.fees
+            if (commission) updateData.pnl -= commission
+            if (fees) updateData.pnl -= fees
+            
+            // Calculate P&L Percentage
+            updateData.pnlPercentage = (updateData.pnl / (entryPrice * positionSize)) * 100
+        }
+
+        const trade = await Trade.findOneAndUpdate(
+            { _id: req.params.id, user: req.userId },
+            updateData,
+            {
+                new: true,
+                runValidators: true,
+            }
+        ).populate('strategy')
 
         // Regenerate AI analysis if requested
         if (req.body.regenerateAI) {

@@ -96,6 +96,9 @@ const Admin = () => {
         onSuccess: () => {
             queryClient.invalidateQueries(['admin-flags'])
             toast.success('Protocol updated')
+        },
+        onError: (error) => {
+            toast.error(error.response?.data?.message || 'Protocol update failed')
         }
     })
 
@@ -106,6 +109,9 @@ const Admin = () => {
         onSuccess: () => {
             queryClient.invalidateQueries(['admin-users'])
             toast.success('Operator de-provisioned')
+        },
+        onError: (error) => {
+            toast.error(error.response?.data?.message || 'Failed to de-provision operator')
         }
     })
 
@@ -116,6 +122,9 @@ const Admin = () => {
         onSuccess: () => {
             setShowBroadcastModal(false)
             toast.success('Broadcast transmitted to all terminals')
+        },
+        onError: (error) => {
+            toast.error(error.response?.data?.message || 'Broadcast transmission failed')
         }
     })
 
@@ -127,6 +136,9 @@ const Admin = () => {
             setShowUserModal(false)
             queryClient.invalidateQueries(['admin-users'])
             toast.success('Operator profile updated')
+        },
+        onError: (error) => {
+            toast.error(error.response?.data?.message || 'Failed to update operator profile')
         }
     })
 

@@ -253,7 +253,7 @@ const Register = () => {
                             <ul className="space-y-2">
                                 <li className="flex items-center space-x-2 text-sm text-gray-300">
                                     <Check className="w-4 h-4 text-green-400" />
-                                    <span>14-day free trial</span>
+                                    <span>7-day free trial</span>
                                 </li>
                                 <li className="flex items-center space-x-2 text-sm text-gray-300">
                                     <Check className="w-4 h-4 text-green-400" />

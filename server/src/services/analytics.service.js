@@ -26,7 +26,8 @@ export const calculateDashboardStats = async (userId, timeRange = '1M') => {
         aiInsights, 
         strategyStats, 
         marketStats,
-        recentTrades
+        recentTrades,
+        psychologyData
     ] = await Promise.all([
         // Current Period Summary
         Trade.aggregate([
@@ -78,7 +79,8 @@ export const calculateDashboardStats = async (userId, timeRange = '1M') => {
         Trade.find({ user: userObjectId, status: 'closed' })
             .sort({ entryDate: -1 })
             .limit(10)
-            .select('symbol market direction entryDate pnl pnlPercentage status')
+            .select('symbol market direction entryDate pnl pnlPercentage status'),
+        calculatePsychologyAnalytics(userId, { range: timeRange })
     ])
 
     const currentStats = currentSummaryResult[0] || { totalTrades: 0, winningTrades: 0, losingTrades: 0, totalPnL: 0, totalWins: 0, totalLosses: 0 }
@@ -126,13 +128,14 @@ export const calculateDashboardStats = async (userId, timeRange = '1M') => {
             expectancyChange: expectancy - prevExpectancy,
         },
         todaySummary: {
-            totalTrades: todayStats.totalTrades,
-            totalPnL: parseFloat(todayStats.totalPnL.toFixed(2)),
+            totalTrades: todayStats.totalTrades || 0,
+            totalPnL: parseFloat((todayStats.totalPnL || 0).toFixed(2)),
             winRate: todayStats.totalTrades > 0 ? parseFloat(((todayStats.winningTrades / todayStats.totalTrades) * 100).toFixed(2)) : 0,
         },
         equityCurve,
         strategies: strategyStats,
         markets: marketStats,
+        psychology: psychologyData,
         winLossDistribution: [
             { name: 'Winning Trades', value: currentStats.winningTrades, color: '#10B981' },
             { name: 'Losing Trades', value: currentStats.losingTrades, color: '#EF4444' },

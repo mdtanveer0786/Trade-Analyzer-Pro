@@ -30,7 +30,7 @@ export const createSubscription = async (req, res, next) => {
                 plan_id: process.env.RAZORPAY_MONTHLY_PLAN_ID,
                 total_count: 12,
                 interval: 'monthly',
-                amount: 29900, // in paise
+                amount: 19900, // in paise (₹199)
                 currency: 'INR',
                 name: 'Monthly Plan',
                 description: 'Monthly subscription for TradeAnalyzer Pro'
@@ -39,10 +39,10 @@ export const createSubscription = async (req, res, next) => {
                 plan_id: process.env.RAZORPAY_YEARLY_PLAN_ID,
                 total_count: 1,
                 interval: 'yearly',
-                amount: 99900, // in paise
+                amount: 78600, // in paise (₹786)
                 currency: 'INR',
                 name: 'Annual Plan',
-                description: 'Annual subscription for TradeAnalyzer Pro (Save 72%)'
+                description: 'Annual subscription for TradeAnalyzer Pro (Best Value)'
             },
         }
 
@@ -407,11 +407,11 @@ export const createCheckoutSession = async (req, res, next) => {
 
         const plans = {
             monthly: {
-                amount: 29900,
+                amount: 19900,
                 name: 'Monthly Plan',
             },
             yearly: {
-                amount: 99900,
+                amount: 78600,
                 name: 'Annual Plan',
             },
         }
@@ -758,20 +758,23 @@ const getPlanFeatures = (plan) => {
     const baseFeatures = [
         'Unlimited trades',
         'Advanced analytics',
-        'AI-powered insights',
+        'Risk management tools',
+        'Trade screenshots & notes',
+        'Email support',
         'Psychology tracking',
         'CSV import/export',
         'Mobile responsive',
-        'Email support',
     ]
 
     const premiumFeatures = [
         ...baseFeatures,
-        'Priority support',
-        'Beta feature access',
+        'AI-powered insights',
         'Custom reports',
-        'Team collaboration',
-        'API access',
+        'Priority email & chat support',
+        'Dedicated account manager',
+        'Early access to new features',
+        'Broker API priority access',
+        'Beta feature access',
     ]
 
     return plan === 'monthly' ? baseFeatures : premiumFeatures

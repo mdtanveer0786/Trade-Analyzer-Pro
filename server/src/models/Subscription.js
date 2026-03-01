@@ -706,20 +706,20 @@ const getFreeFeatures = () => ({
 })
 
 const getMonthlyFeatures = () => ({
-    maxTrades: 100,
+    maxTrades: 1000000, // Unlimited
     aiAnalysis: true,
     advancedAnalytics: true,
     psychologyTracking: true,
     csvImport: true,
     apiAccess: false,
-    prioritySupport: false,
-    customReports: false,
+    prioritySupport: true,
+    customReports: true,
     teamCollaboration: false,
     betaFeatures: false,
 })
 
 const getYearlyFeatures = () => ({
-    maxTrades: 1000,
+    maxTrades: 1000000, // Unlimited
     aiAnalysis: true,
     advancedAnalytics: true,
     psychologyTracking: true,
