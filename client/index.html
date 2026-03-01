@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="TradeAnalyzer Pro - AI-Powered Trading Journal SaaS">
+    <meta name="keywords"
+        content="trading journal, stock analysis, forex trading, crypto trading, trading psychology, AI trading">
+    <title>TradeAnalyzer Pro | AI-Powered Trading Journal</title>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tradeanalyzer.pro/">
+    <meta property="og:title" content="TradeAnalyzer Pro | AI-Powered Trading Journal">
+    <meta property="og:description"
+        content="India's Most Advanced Trading Journal. Track, analyze, and improve your trading performance with AI-powered insights.">
+    <meta property="og:image" content="https://tradeanalyzer.pro/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://tradeanalyzer.pro/">
+    <meta property="twitter:title" content="TradeAnalyzer Pro | AI-Powered Trading Journal">
+    <meta property="twitter:description"
+        content="India's Most Advanced Trading Journal. Track, analyze, and improve your trading performance with AI-powered insights.">
+    <meta property="twitter:image" content="https://tradeanalyzer.pro/og-image.png">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#111827">
+
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Critical CSS to prevent layout shift */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #030712;
+            color: #f9fafb;
+            overflow-x: hidden;
+        }
+
+        #root {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- React root -->
+    <div id="root"></div>
+
+    <!-- Vite will inject scripts here -->
+    <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Analytics (optional) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+    </script>
+</body>
+
+</html>
