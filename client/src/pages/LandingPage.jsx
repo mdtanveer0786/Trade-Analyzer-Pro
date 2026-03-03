@@ -40,7 +40,7 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import axios from 'axios'
+import { useAuth } from '../contexts/AuthContext'
 
 // Animation Variants
 const fadeInUp = {
@@ -58,6 +58,7 @@ const staggerContainer = {
 }
 
 const LandingPage = () => {
+    const { api } = useAuth()
     const [email, setEmail] = useState('')
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [openFaq, setOpenFaq] = useState(null)
@@ -75,8 +76,7 @@ const LandingPage = () => {
         // Fetch public stats
         const fetchStats = async () => {
             try {
-                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
-                const response = await axios.get(`${apiUrl}/public/stats`)
+                const response = await api.get('public/stats')
                 if (response.data.success) {
                     setPlatformStats({
                         totalUsers: Math.max(6000, response.data.data.totalUsers),
@@ -90,7 +90,7 @@ const LandingPage = () => {
         fetchStats()
 
         return () => window.removeEventListener('scroll', handleScroll)
-    }, [scrolled])
+    }, [scrolled, api])
 
     // Smooth scroll for anchor links
     const scrollToSection = useCallback((id) => {
