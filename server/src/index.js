@@ -4,7 +4,6 @@ import cors from 'cors'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import mongoSanitize from 'express-mongo-sanitize'
-import xss from 'xss-clean'
 import compression from 'compression'
 import dotenv from 'dotenv'
 import { createServer } from 'http'
@@ -34,6 +33,10 @@ import { authMiddleware } from './middleware/auth.js'
 connectDB()
 
 const app = express()
+
+// Trust proxy for Vercel/Cloudflare
+app.set('trust proxy', 1)
+
 const httpServer = createServer(app)
 const io = new Server(httpServer, {
     cors: {
@@ -51,8 +54,15 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 app.use(mongoSanitize())
-app.use(xss())
 app.use(compression())
+
+// Request Logging for debugging
+app.use((req, res, next) => {
+    if (process.env.NODE_ENV !== 'production') {
+        console.log(`${req.method} ${req.url}`)
+    }
+    next()
+})
 
 // Rate limiting
 const limiter = rateLimit({
@@ -104,6 +114,14 @@ app.get('/', (req, res) => {
     res.status(200).json({
         status: 'ok',
         message: 'Server is running perfectly fine!',
+    })
+})
+
+// 404 Handler for API routes
+app.use('/api/*', (req, res) => {
+    res.status(404).json({
+        success: false,
+        message: `API Route not found: ${req.method} ${req.originalUrl}`
     })
 })
 
