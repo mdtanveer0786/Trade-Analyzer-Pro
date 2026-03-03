@@ -13,8 +13,14 @@ export const AuthProvider = ({ children }) => {
 
     // Initialize axios using useMemo to prevent recreation on every render
     const api = React.useMemo(() => {
+        let baseURL = import.meta.env.VITE_API_URL || '/api'
+        // Ensure baseURL ends with / for consistent path joining
+        if (!baseURL.endsWith('/')) {
+            baseURL += '/'
+        }
+        
         const instance = axios.create({
-            baseURL: '/api',
+            baseURL,
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -42,7 +48,8 @@ export const AuthProvider = ({ children }) => {
                         const refreshToken = localStorage.getItem('refreshToken')
                         if (!refreshToken) throw new Error('No refresh token')
 
-                        const response = await axios.post('/api/auth/refresh-token', {
+                        // Use instance to ensure correct baseURL and interceptors
+                        const response = await instance.post('auth/refresh-token', {
                             refreshToken,
                         })
 
@@ -79,7 +86,7 @@ export const AuthProvider = ({ children }) => {
         }
 
         try {
-            const response = await api.get('/auth/me')
+            const response = await api.get('auth/me')
             setUser(response.data.data)
             setIsAuthenticated(true)
         } catch (error) {
@@ -92,7 +99,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const response = await api.post('/auth/login', { email, password })
+            const response = await api.post('auth/login', { email, password })
             const { user, token, refreshToken } = response.data
 
             // Requirement: Store token only after login
@@ -115,7 +122,7 @@ export const AuthProvider = ({ children }) => {
     const googleLogin = async (credentialResponse) => {
         setIsLoading(true)
         try {
-            const response = await api.post('/auth/google-login', {
+            const response = await api.post('auth/google-login', {
                 credential: credentialResponse.credential
             })
 
@@ -141,7 +148,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (userData) => {
         try {
-            const response = await api.post('/auth/register', userData)
+            const response = await api.post('auth/register', userData)
             
             // Requirement: Do NOT store token after registration
             // Requirement: Return only success message
@@ -164,7 +171,7 @@ export const AuthProvider = ({ children }) => {
 
     const forgotPassword = async (email) => {
         try {
-            await api.post('/auth/forgot-password', { email })
+            await api.post('auth/forgot-password', { email })
             toast.success('Password reset email sent!')
             return { success: true }
         } catch (error) {
@@ -175,7 +182,7 @@ export const AuthProvider = ({ children }) => {
 
     const resetPassword = async (token, password) => {
         try {
-            await api.post(`/auth/reset-password/${token}`, { password })
+            await api.post(`auth/reset-password/${token}`, { password })
             toast.success('Password reset successful!')
             return { success: true }
         } catch (error) {
@@ -186,7 +193,7 @@ export const AuthProvider = ({ children }) => {
 
     const updateProfile = async (userData) => {
         try {
-            const response = await api.put('/auth/profile', userData)
+            const response = await api.put('auth/profile', userData)
             setUser(response.data.data)
             toast.success('Profile updated successfully!')
             return { success: true, data: response.data.data }
@@ -198,7 +205,7 @@ export const AuthProvider = ({ children }) => {
 
     const changePassword = async (passwords) => {
         try {
-            await api.put('/auth/change-password', passwords)
+            await api.put('auth/change-password', passwords)
             toast.success('Password updated successfully!')
             return { success: true }
         } catch (error) {
@@ -209,7 +216,7 @@ export const AuthProvider = ({ children }) => {
 
     const deleteAccount = async () => {
         try {
-            await api.delete('/auth/account')
+            await api.delete('auth/account')
             logout()
             toast.success('Account deleted successfully')
             return { success: true }
@@ -221,7 +228,7 @@ export const AuthProvider = ({ children }) => {
 
     const clearAllTrades = async () => {
         try {
-            await api.delete('/trades/clear-all')
+            await api.delete('trades/clear-all')
             toast.success('All trades cleared successfully')
             return { success: true }
         } catch (error) {
@@ -232,7 +239,7 @@ export const AuthProvider = ({ children }) => {
 
     const exportUserData = async () => {
         try {
-            const response = await api.get('/auth/export-data')
+            const response = await api.get('auth/export-data')
             const dataStr = JSON.stringify(response.data.data, null, 2)
             const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
             

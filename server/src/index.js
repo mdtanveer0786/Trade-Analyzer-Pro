@@ -38,9 +38,19 @@ const app = express()
 app.set('trust proxy', 1)
 
 const httpServer = createServer(app)
+
+// Prepare allowed origins
+const allowedOrigins = [
+    process.env.CLIENT_URL,
+    'https://trade-analyzer-pro-yk9z.vercel.app',
+    'https://trade-analyzer-pro-two.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:3000'
+].filter(Boolean)
+
 const io = new Server(httpServer, {
     cors: {
-        origin: process.env.CLIENT_URL,
+        origin: allowedOrigins,
         credentials: true,
     },
 })
@@ -48,8 +58,25 @@ const io = new Server(httpServer, {
 // Security middleware
 app.use(helmet())
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: function (origin, callback) {
+        // allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true)
+        
+        // Check if origin is allowed
+        const isAllowed = allowedOrigins.some(allowedOrigin => {
+            return allowedOrigin.replace(/\/$/, '') === origin.replace(/\/$/, '')
+        })
+
+        if (isAllowed || process.env.NODE_ENV !== 'production') {
+            callback(null, true)
+        } else {
+            console.error('CORS blocked origin:', origin)
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
 }))
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
