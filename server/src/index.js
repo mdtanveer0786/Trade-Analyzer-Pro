@@ -99,6 +99,14 @@ app.get('/health', (req, res) => {
     })
 })
 
+// server running  route
+app.get('/', (req, res) => {
+    res.status(200).json({
+        status: 'ok',
+        message: 'Server is running perfectly fine!',
+    })
+})
+
 // Error handling
 app.use(errorHandler)
 
