@@ -42,7 +42,7 @@ const httpServer = createServer(app)
 // Prepare allowed origins
 const allowedOrigins = [
     process.env.CLIENT_URL,
-    'https://trade-analyzer-pro-yk9z.vercel.app',
+    'https://trade-analyzer-proo.vercel.app',
     'https://trade-analyzer-pro-two.vercel.app',
     'http://localhost:5173',
     'http://localhost:3000'
